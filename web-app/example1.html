@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>visualCaptcha - A cool visual drag-and-drop captcha jQuery plugin by emotionLoop - Demo</title>
+
+    <meta name="keywords" content="visualcaptcha, visual, jquery captcha, captcha, mobile-friendly, better captcha, fancy captcha, captcha alternative, jquery, jquery ui, drag, draggable, demo, retina, accessibility">
+    <meta name="description" content="A cool visual drag-and-drop captcha jQuery plugin. Mobile-friendly. Retina-ready. Accessible.">
+    <meta name="author" content="emotionLoop">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- Required CSS -->
+    <link rel="stylesheet" href="inc/visualcaptcha.css" media="all" />
+
+    <link rel="stylesheet" href="sample.css" media="all" />
+</head>
+<body>
+<div id="logo">
+    <a href="http://visualcaptcha.net" target="_blank"><img src="http://visualcaptcha.net/img/logo-white.png" alt="visualCaptcha"></a>
+</div>
+<div id="wrapper" class="type-0">
+    <div id="content">
+        <p>Fill in the form and submit it.</p>
+        <form name="frm_sample" id="frm_sample" action="index.php" method="post">
+            <input type="hidden" name="form_submit" value="1" readonly="readonly" />
+            <input type="hidden" name="css_type" value="0" readonly="readonly" />
+            <p><label for="name">Name:</label> <input type="text" name="name" id="name" value="" size="30" /></p>
+            <script>
+                window.vCVals = {
+                    'f': 'frm_sample',
+                    'n': '528e7af691cbc',
+                    'a': 'captcha-accessibility-value'
+                };
+            </script>
+            <div class="eL-captcha type-0 clearfix">
+                <p class="eL-explanation type-0"><span class="desktopText">Drag the <strong>Envelope</strong> to the circle on the side.</span><span class="mobileText">Touch the <strong>Envelope</strong> to move it to the circle on the side.</span></p>
+                <div class="eL-possibilities type-0 clearfix">
+                    <img src="image.php?i=1&amp;r=1385069760" class="vc-1" data-value="7a954aeccd5c540b2b31f2a30739ba09cb1888e1" alt="" title="">
+                    <img src="image.php?i=2&amp;r=1385069760" class="vc-2" data-value="23ffcd3a01b08e60f449418444a718aa2eb896eb" alt="" title="">
+                    <img src="image.php?i=3&amp;r=1385069760" class="vc-3" data-value="5de5f155292ef9fb94c28f2947b0cd9dcf18c085" alt="" title="">
+                    <img src="image.php?i=4&amp;r=1385069760" class="vc-4" data-value="d8ae31a0e4609915cdd38376bb34e6e0cdfafb29" alt="" title="">
+                    <img src="image.php?i=5&amp;r=1385069760" class="vc-5" data-value="6057c0788079a44e5aaf15e366c59f0885fbd121" alt="" title="">
+                </div>
+                <div class="eL-where2go type-0 clearfix">
+                    <p>Drop<br>Here</p>
+                </div>
+                <p class="eL-accessibility type-0"><a href="#" title="Accessibility option: listen to a question and answer it!"><img src="images/visualcaptcha/accessibility.png" alt="Accessibility option: listen to a question and answer it!"></a></p>
+                <div class="eL-accessibility type-0">
+                    <p>Type below the <strong>answer</strong> to what you hear. Numbers or words:</p>
+                    <audio preload="preload">
+                        <source src="audio.php?t=ogg&amp;r=1385069760" type="audio/ogg">
+                        <source src="audio.php?t=mp3&amp;r=1385069760" type="audio/mpeg">
+                        Your browser does not support the audio element.        </audio>
+                </div>
+            </div>
+            <p class="submit"><button type="submit" name="submit-bt">Submit form</button></p>
+            <p><small>CSS types: <a href="?css_type=0">Horizontal (default)</a> | <a href="?css_type=1">Vertical</a></small></p>
+        </form>
+    </div>
+    <div id="footer">
+        <p><a href="http://visualcaptcha.net/" target="_blank">visualCaptcha</a> by <a href="http://emotionloop.com/" target="_blank">emotionLoop</a><br />You can get it at <a href="https://github.com/emotionLoop/visualCaptcha" target="_blank">GitHub</a></p>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="inc/visualcaptcha.js"></script>
+</body>
+</html>
