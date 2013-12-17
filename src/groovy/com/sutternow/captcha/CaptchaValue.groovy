@@ -10,4 +10,5 @@ package com.sutternow.captcha
 class CaptchaValue {
     String imageName, imageText, fieldName
     List<String> imageChoices
+    AnswerInfo audioAnswer
 }

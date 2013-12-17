@@ -137,7 +137,6 @@ class VisualCaptcha {
     public String getImageText(String imageName) {
         String imageText = imageName.replace(".png", "")
         return imageText.capitalize()
-
     }
 
 
@@ -150,7 +149,12 @@ class VisualCaptcha {
         int imageChoiceIdx =  rand.nextInt(numberOfChoices)
         log.error "choices is ${imageChoiceIdx}"
         String imageName = choices[imageChoiceIdx]  // get random choice
-        return new CaptchaValue(imageName: imageName, imageText: getImageText(imageName), imageChoices: choices)
+        return new CaptchaValue(imageName: imageName, imageText: getImageText(imageName), imageChoices: choices, audioAnswer: getRandomAudioInfo())
+    }
+
+    private AnswerInfo getRandomAudioInfo() {
+        int audioChoiceIdx =  rand.nextInt(audioFiles.size())
+        return audioFiles[audioChoiceIdx-1]
     }
 
     public CaptchaValue getRandomCaptchaValue() {
