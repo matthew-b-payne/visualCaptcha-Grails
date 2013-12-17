@@ -14,8 +14,6 @@ class ImageManager {
     boolean cacheImages = false
     String imageExtension= '.png'
 
-
-
     private FilenameFilter imageFileNameFilter = new FilenameFilter() {
 
         public boolean accept(File dir, String name) {
@@ -49,9 +47,8 @@ class ImageManager {
         if (directory.exists()) {
             File[] images = directory.listFiles(imageFileNameFilter)
             images.each { imageMap.put(it.name, it.path)}
-            // List
         } else {
-            imageNames = [:]
+            imageNames = []
         }
 
         //java.util.Collections.shuffle(imageMap)  // randomMize these

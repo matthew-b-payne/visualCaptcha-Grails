@@ -13,8 +13,9 @@ class AnswerInfo {
     String encryptedName
 
 
-    public AnswerInfo() {
-
+    public AnswerInfo(String answer, File filePath) {
+        this.answer = answer
+        this.filePath = filePath
     }
 
     public AnswerInfo(String answer, File filePath, encryptedName) {

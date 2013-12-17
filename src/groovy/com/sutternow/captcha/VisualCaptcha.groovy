@@ -1,5 +1,6 @@
 package com.sutternow.captcha
 
+import com.sutternow.commons.RandomUtil
 import groovy.util.logging.Slf4j
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsHttpSession
 import org.springframework.util.DigestUtils
@@ -45,9 +46,8 @@ class VisualCaptcha {
     public imageFile = 'image.php';
     public audioFile = 'audio.php';
     Map<String, String> imageMap
+    List<AnswerInfo> audioFiles = []
 
-
-    def messageDigest = MessageDigest.getInstance("SHA1")
 
     /*  Map<String,String> imageMap = ['Airplane':'airplane.png', 'Ballons':'ballons', 'Camera': 'camera.png',
       'Car': 'car.png', 'Cat': 'cat.png',]
@@ -56,6 +56,7 @@ class VisualCaptcha {
     public VisualCaptcha(ImageManager imageManager) {
         imageManager = imageManager
         imageMap = imageManager.imageMap
+        loadAudio()
     }
 
     public VisualCaptcha(ImageManager imageManager, String resourcePath) {
@@ -64,53 +65,67 @@ class VisualCaptcha {
         this.resourcePath = resourcePath
     }
 
-    public void init() {
-        loadAudio()
-    }
-
-    private void loadAudio() {
-
-        List<File> audioFiles = []
-
-        new AnswerInfo('10', new File(resourcePath + File.separatorChar + '5times2.mp3'),
-        new AnswerInfo('20', self::$audiosPath . '2times10.mp3'),
-        new AnswerInfo('6', self::$audiosPath . '5plus1.mp3'),
-        new AnswerInfo('7', self::$audiosPath . '4plus3.mp3'),
-        new AnswerInfo('4', self::$audiosPath . 'add3to1.mp3'),
-        new AnswerInfo('green', self::$audiosPath . 'addblueandyellow.mp3'),
-        new AnswerInfo('white', self::$audiosPath . 'milkcolor.mp3'),
-        new AnswerInfo('2', self::$audiosPath . 'divide4by2.mp3'),
-        new AnswerInfo('yes', self::$audiosPath . 'sunastar.mp3'),
-        new AnswerInfo('no', self::$audiosPath . 'yourobot.mp3'),
-        new AnswerInfo('12', self::$audiosPath . '6plus6.mp3'),
-        new AnswerInfo('100', self::$audiosPath . '99plus1.mp3'),
-        new AnswerInfo('blue', self::$audiosPath . 'skycolor.mp3'),
-        new AnswerInfo('3', self::$audiosPath . 'after2.mp3'),
-        new AnswerInfo('24', self::$audiosPath . '12times2.mp3'),
-        new AnswerInfo('5', self::$audiosPath . '4plus1.mp3'),
-
-
-        audioPath).eachFileMatch( ~".*${prefix}.*mp3" ) {
-            println it.name
-            audioFiles << it
-        }
-    }
-
-
+    @Deprecated
     public VisualCaptcha() {
 
         /*imageManager = imageManager
         imageMap = imageManager.imageMap*/
     }
 
+    String  md5Hash(String somethingToHash){
+        MessageDigest.getInstance("MD5").
+                digest(somethingToHash.getBytes("UTF-8")).
+                encodeHex().
+                toString()
+    }
+
+
+    public void init() {
+        loadAudio()
+    }
+
+    private void loadAudio() {
+
+        audioFiles << new AnswerInfo('10', new File(resourcePath + File.separatorChar + '5times2.mp3'))
+        audioFiles << new AnswerInfo('20',  new File(resourcePath + File.separatorChar + '2times10.mp3'))
+        audioFiles << new AnswerInfo('6',  new File(resourcePath + File.separatorChar + '5plus1.mp3'))
+        audioFiles << new AnswerInfo('7',  new File(resourcePath + File.separatorChar + '4plus3.mp3'))
+        audioFiles << new AnswerInfo('4',  new File(resourcePath + File.separatorChar + 'add3to1.mp3'))
+        audioFiles << new AnswerInfo('green',  new File(resourcePath + File.separatorChar + 'addblueandyellow.mp3'))
+        audioFiles << new AnswerInfo('white',  new File(resourcePath + File.separatorChar + 'milkcolor.mp3'))
+        audioFiles << new AnswerInfo('2',  new File(resourcePath + File.separatorChar + 'divide4by2.mp3'))
+        audioFiles << new AnswerInfo('yes',  new File(resourcePath + File.separatorChar + 'sunastar.mp3'))
+        audioFiles << new AnswerInfo('no',  new File(resourcePath + File.separatorChar + 'yourobot.mp3'))
+        audioFiles << new AnswerInfo('12',  new File(resourcePath + File.separatorChar + '6plus6.mp3'))
+        audioFiles << new AnswerInfo('100',  new File(resourcePath + File.separatorChar + '99plus1.mp3'))
+        audioFiles << new AnswerInfo('blue',  new File(resourcePath + File.separatorChar + 'skycolor.mp3'))
+        audioFiles << new AnswerInfo('3',  new File(resourcePath + File.separatorChar + 'after2.mp3'))
+        audioFiles << new AnswerInfo('24',  new File(resourcePath + File.separatorChar + '12times2.mp3'))
+        audioFiles << new AnswerInfo('5',  new File(resourcePath + File.separatorChar + '4plus1.mp3'))
+
+        audioFiles.each {
+             it.encryptedName = RandomUtil.getRandomId()
+        }
+
+        audioPath.eachFileMatch( ~".*${prefix}.*mp3" ) {
+            println it.name
+            audioFiles << it
+        }
+    }
+
+
+    AnswerInfo getAudioAnswer(String id) {
+       return audioFiles.find{
+            it.encryptedName==id
+        }
+    }
+
+
+
+
 
     public void reload() {
         imageMap = imageManager.imageMap
-
-
-        
-        
-        
     }
 
     public List<String> getImageNames() {
