@@ -1,31 +1,44 @@
 package gcaptcha
 
+import com.sun.java_cup.internal.runtime.virtual_parse_stack
 import com.sutternow.captcha.CaptchaValue
 import com.sutternow.captcha.ImageManager
 import com.sutternow.captcha.VisualCaptcha
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.springframework.beans.factory.InitializingBean
 
-class CaptchaTagLib {
+import javax.annotation.Resource
 
+class CaptchaTagLib implements  GrailsApplicationAware   {
+                              //resourcePath
     static namespace = "cap"
 
+    def servletContext
+    //String resourcePath = 'C:/java/workspaces/security/visualCaptcha-Grails/web-app/images/visualcaptcha' //servletContext.getRealPath('/visualcaptcha')
+    //ImageManager imageManager// = new ImageManager(workingDirectory: new File('/images/visualcaptcha' + File.pathSeparator + 'choices'))
+    @Resource
+    VisualCaptcha vc // = new VisualCaptcha(imageManager,resourcePath )
 
-    String resourcePath = servletContext.getRealPath('/visualcaptcha')
-    ImageManager imageManager = new ImageManager(workingDirectory: new File('/images/visualcaptcha' + File.pathSeparator + 'choices'))
-    VisualCaptcha vc = new VisualCaptcha(imageManager,resourcePath )
+    GrailsApplication grailsApplication
+
+   /* void afterPropertiesSet() {
+         resourcePath  = servletContext.getRealPath(VisualCaptcha.captchaPath)
+         imageManager = new ImageManager(workingDirectory: new File(resourcePath + File.separator + 'choices'))
+    }*/
 
     def captcha = { attrs ->
+        pluginContextPath
         def formId = attrs.formId
         def fieldName = attrs.fieldName ?: UUID.randomUUID().toString() //attrs.fieldName
         def accessibilityFieldName = attrs.accessibilityFieldName
         Long datetime = new Date().time
         int layoutType = attrs.int("layoutType") ?: 0 // horizontal (0) | vertial (1)
-        def audioFile = 'audio.php' // TODO, use audio controller, long audio files and get random one
         String base = request.contextPath
         def imageLimit = (layoutType == 0) ? 5 : 4 // only 4 for Vertical
         CaptchaValue captchaValue = vc.getRandomCaptchaValue(imageLimit)
         captchaValue.fieldName=fieldName
         session.captchaValue = captchaValue
-
 
         out << """
               <script>
@@ -88,4 +101,8 @@ class CaptchaTagLib {
          }*/
     }
 
+    @Override
+    void setGrailsApplication(GrailsApplication grailsApplication) {
+          this.grailsApplication = grailsApplication
+    }
 }

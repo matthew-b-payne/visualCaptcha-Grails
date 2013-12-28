@@ -1,3 +1,5 @@
+import com.sutternow.captcha.VisualCaptcha
+
 class GcaptchaGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -10,11 +12,9 @@ class GcaptchaGrailsPlugin {
 
     // TODO Fill in these fields
     def title = "Gcaptcha Plugin" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
-    def description = '''\
-Brief summary/description of the plugin.
-'''
+    def author = "Matthew Payne"
+    def authorEmail = "matthew.b.payne@gmail.com"
+    def description = '''Grails port of visual captcha plugin'''
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/gcaptcha"
@@ -41,7 +41,23 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+
+        resourcePathProvider(com.sutternow.captcha.ResourcePathProvider)
+
+        captchaFilePath(org.springframework.core.io.FileSystemResource, "/WEB-INF/visualcaptcha" + File.separator + 'choices') {
+
+        }
+
+        imageManager(com.sutternow.captcha.ImageManager) {
+            //ResourcePathProvider resourcePathProvider
+            workingDirectory = "#{resourcePathProvider.getRealPath('/WEB-INF/visualcaptcha/choices')}" // ref('captchaFilePath').file
+        }
+
+        visualCaptcha(com.sutternow.captcha.VisualCaptcha, ref("imageManager"), "#" ){ bean ->
+            bean.initMethod = 'init'
+            resourcePathProvider = ref('resourcePathProvider')
+            resourcePath =  "#{resourcePathProvider.getRealPath('/WEB-INF/visualcaptcha/choices')}"
+        }
     }
 
     def doWithDynamicMethods = { ctx ->

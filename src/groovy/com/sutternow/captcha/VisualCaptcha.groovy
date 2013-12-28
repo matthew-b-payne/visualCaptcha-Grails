@@ -4,7 +4,9 @@ import com.sutternow.commons.RandomUtil
 import groovy.util.logging.Slf4j
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsHttpSession
 import org.springframework.util.DigestUtils
+import org.springframework.web.context.ServletConfigAware
 
+import javax.servlet.ServletConfig
 import java.security.MessageDigest
 
 import static java.util.Collections.shuffle
@@ -17,37 +19,29 @@ import static java.util.Collections.shuffle
  * To change this template use File | Settings | File Templates.
  */
 @Slf4j
-class VisualCaptcha {
+class VisualCaptcha implements ServletConfigAware {
+
+    public static final String captchaPath = "/visualcaptcha"
+    ResourcePathProvider resourcePathProvider
 
     Random rand = new Random()
     private formId = 'frm_captcha';
     private type = 0;
     private fieldName = 'captcha-value';
     private accessibilityFieldName = 'captcha-accessibility-value';
-    private html = '';
     private hash = '';
     private hashSalt = '';
-    private answers = []
-    private options = []
     private optionsProperties = []
-    private accessibilityOptions = []
-    private accessibilityFile = '';
     private accessibilityAnswer = '';
-    private value = '';
-    private valueProperties = []
     private ImageManager imageManager
-    private htmlClass = 'inc/visualcaptcha.class.html.php';
     public imagesPath = 'images/visualcaptcha';
-
     public audioPath = 'audio';
 
     String resourcePath;
 
-    public imageFile = 'image.php';
-    public audioFile = 'audio.php';
     Map<String, String> imageMap
     List<AnswerInfo> audioFiles = []
-
+    ServletConfig servletConfig
 
     /*  Map<String,String> imageMap = ['Airplane':'airplane.png', 'Ballons':'ballons', 'Camera': 'camera.png',
       'Car': 'car.png', 'Cat': 'cat.png',]
@@ -56,13 +50,13 @@ class VisualCaptcha {
     public VisualCaptcha(ImageManager imageManager) {
         imageManager = imageManager
         imageMap = imageManager.imageMap
-        loadAudio()
     }
 
     public VisualCaptcha(ImageManager imageManager, String resourcePath) {
         imageManager = imageManager
         imageMap = imageManager.imageMap
         this.resourcePath = resourcePath
+
     }
 
     @Deprecated
@@ -81,6 +75,12 @@ class VisualCaptcha {
 
 
     public void init() {
+        this.resourcePath = resourcePath
+        println "resource path is ${resourcePath}"
+        if (resourcePathProvider)  {
+            println resourcePathProvider.getPath("/visualCaptcha")
+        }
+
         loadAudio()
     }
 
@@ -106,11 +106,6 @@ class VisualCaptcha {
         audioFiles.each {
              it.encryptedName = RandomUtil.getRandomId()
         }
-
-        audioPath.eachFileMatch( ~".*${prefix}.*mp3" ) {
-            println it.name
-            audioFiles << it
-        }
     }
 
 
@@ -119,10 +114,6 @@ class VisualCaptcha {
             it.encryptedName==id
         }
     }
-
-
-
-
 
     public void reload() {
         imageMap = imageManager.imageMap
@@ -229,4 +220,8 @@ class VisualCaptcha {
         return session[this.hash + '::accessibilityFile'];
     }
 
+    @Override
+    void setServletConfig(ServletConfig servletConfig) {
+          this.servletConfig = servletConfig
+    }
 }

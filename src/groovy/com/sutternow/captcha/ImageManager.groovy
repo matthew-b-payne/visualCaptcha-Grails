@@ -13,6 +13,15 @@ class ImageManager {
     List<String> imageNames
     boolean cacheImages = false
     String imageExtension= '.png'
+    ResourcePathProvider resourcePathProvider
+
+    public ImageManager() {
+
+    }
+
+    public ImageManager(File workingDirectory) {
+        this.workingDirectory = workingDirectory
+    }
 
     private FilenameFilter imageFileNameFilter = new FilenameFilter() {
 
@@ -57,7 +66,6 @@ class ImageManager {
     }
 
 
-
     public List<String> getImageNames() {
 
         if (cacheImages != false || imageNames == null || imageNames.size() == 0)
@@ -78,6 +86,7 @@ class ImageManager {
 
     public void setWorkingDirectory(File workingDirectory) {
         this.workingDirectory = workingDirectory
+        println "working directory set to ${workingDirectory}"
     }
 
 
