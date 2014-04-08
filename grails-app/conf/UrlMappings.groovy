@@ -7,6 +7,9 @@ class UrlMappings {
 			}
 		}
 
+        "/captcha/$action?/$id?"(controller: "captcha")
+        "/captcha2/$action?/$id?"(controller: "captcha")
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}

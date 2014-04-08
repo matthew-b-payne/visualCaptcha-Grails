@@ -3,14 +3,18 @@ package visualCaptcha
 import com.sutternow.captcha.AnswerInfo
 import com.sutternow.captcha.CaptchaValue
 import com.sutternow.captcha.VisualCaptcha
+import grails.converters.JSON
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import static javax.servlet.http.HttpServletResponse.*
 
-class CaptchaController {
+
+class CaptchaController implements  GrailsApplicationAware  {
+    GrailsApplication grailsApplication
 
     VisualCaptcha visualCaptcha
 
     def index() {
-
-
     }
 
 
@@ -30,8 +34,8 @@ class CaptchaController {
             header 'Cache-Control', 'private'
             def mimeType, extension, file
 
-            CaptchaValue captchaValue = session.captchaValue
-            File audioFile = captchaValue.audioAnswer.filePath
+            //CaptchaValue captchaValue = session.captchaValue
+            File audioFile = audioAnswerInfo.filePath
             switch (t) {
                 case "ogg":
                     mimeType = 'audio/ogg'
@@ -51,6 +55,11 @@ class CaptchaController {
             response.setContentType("application/octet-stream")
             response.setHeader("Content-disposition", "attachment;filename=${file.getName()}")
             response.outputStream << file.newInputStream()
+        }  else {
+            response.status =   SC_FORBIDDEN
+            def responseMap = [:]
+            responseMap.message = "Not allowed to access audio file"
+            render(responseMap as JSON)
         }
 
     }
